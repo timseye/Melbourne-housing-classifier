@@ -12,6 +12,14 @@
             padding: 20px;
             background-color: #f5f5f5;
         }
+        .warning {
+            background-color: #fff3cd;
+            color: #856404;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            border-left: 4px solid #ffc107;
+        }
         h1 {
             color: #333;
             text-align: center;
@@ -67,6 +75,12 @@
 <body>    <div class="container">
         <h1>Melbourne Housing Price Predictor</h1>
         <p>Enter property details to predict if the price will be above or below the median.</p>
+        
+        {% if not js_loaded %}
+        <div class="warning">
+            <strong>Warning:</strong> Test case selector JavaScript files could not be loaded. Some features may not work correctly.
+        </div>
+        {% endif %}
         
         <div class="form-group">
             <label for="testCaseSelector">Load test case:</label>

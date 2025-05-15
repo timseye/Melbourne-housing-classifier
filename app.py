@@ -21,19 +21,39 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 # Load the model
 @app.on_event("startup")
 async def startup_event():
-    global model, feature_names
-    model = joblib.load("house_price_model.joblib")
-    
-    # Get the feature names used during training
-    # Assuming the first step in the pipeline is the preprocessor
-    feature_names = {
-        'numerical': model.named_steps['preprocessor'].transformers_[0][2],
-        'categorical': model.named_steps['preprocessor'].transformers_[1][2]
-    }
+    global model, feature_names, model_loaded
+    model_loaded = False
+    try:
+        model = joblib.load("house_price_model.joblib")
+        
+        # Get the feature names used during training
+        # Assuming the first step in the pipeline is the preprocessor
+        feature_names = {
+            'numerical': model.named_steps['preprocessor'].transformers_[0][2],
+            'categorical': model.named_steps['preprocessor'].transformers_[1][2]
+        }
+        model_loaded = True
+        print("Model loaded successfully!")
+    except FileNotFoundError:
+        print("Error: Model file 'house_price_model.joblib' not found.")
+        print("Please run ml_model.py first to train and save the model.")
+    except Exception as e:
+        print(f"Error loading model: {e}")
+        print("Please check if the model file is valid or retrain the model.")
 
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    # Check if test cases file exists
+    test_cases_path = os.path.join("static", "js", "test_cases.js")
+    js_exists = os.path.exists(test_cases_path)
+    
+    if not js_exists:
+        print(f"Warning: Test cases file not found at {test_cases_path}")
+        
+    return templates.TemplateResponse("index.html", {
+        "request": request,
+        "js_loaded": js_exists
+    })
 
 @app.post("/predict", response_class=HTMLResponse)
 async def predict(
@@ -56,6 +76,16 @@ async def predict(
     regionname: str = Form(...),
     propertycount: float = Form(...)
 ):
+    # Check if model is loaded
+    if not model_loaded:
+        error_message = {
+            "error": "Model not loaded",
+            "message": "The prediction model has not been loaded. Please run ml_model.py first to train and save the model."
+        }
+        return templates.TemplateResponse(
+            "error.html", {"request": request, "error": error_message}
+        )
+        
     # Create input DataFrame
     input_data = {
         'Suburb': [suburb],
@@ -79,9 +109,20 @@ async def predict(
     
     # Create DataFrame
     df = pd.DataFrame(input_data)
-      # Make prediction
-    prediction = model.predict(df)[0]
-    probability = model.predict_proba(df)[0][1]
+    
+    try:
+        # Make prediction
+        prediction = model.predict(df)[0]
+        probability = model.predict_proba(df)[0][1]
+    except Exception as e:
+        error_message = {
+            "error": "Prediction Error",
+            "message": f"An error occurred during prediction: {str(e)}",
+            "input_data": input_data
+        }
+        return templates.TemplateResponse(
+            "error.html", {"request": request, "error": error_message}
+        )
     
     # Get confidence in the predicted class (always show confidence in the predicted outcome)
     confidence = probability if prediction == 1 else 1 - probability
