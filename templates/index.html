@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Melbourne Housing Price Predictor</title>
+    <script src="/static/js/test_cases.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -63,10 +64,16 @@
         }
     </style>
 </head>
-<body>
-    <div class="container">
+<body>    <div class="container">
         <h1>Melbourne Housing Price Predictor</h1>
         <p>Enter property details to predict if the price will be above or below the median.</p>
+        
+        <div class="form-group">
+            <label for="testCaseSelector">Load test case:</label>
+            <select id="testCaseSelector" style="margin-bottom: 20px; padding: 10px; width: 100%;">
+                <!-- Options will be populated by JavaScript -->
+            </select>
+        </div>
         
         <form action="/predict" method="post">
             <div class="form-row">

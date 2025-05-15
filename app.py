@@ -15,6 +15,7 @@ templates = Jinja2Templates(directory="templates")
 
 # Mount static files directory
 os.makedirs("static", exist_ok=True)
+os.makedirs("static/js", exist_ok=True)  # Ensure js directory exists
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Load the model
