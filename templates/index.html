@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Melbourne Housing Price Predictor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -10px;
+        }
+        .form-col {
+            flex: 1;
+            padding: 0 10px;
+            min-width: 200px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Melbourne Housing Price Predictor</h1>
+        <p>Enter property details to predict if the price will be above or below the median.</p>
+        
+        <form action="/predict" method="post">
+            <div class="form-row">
+                <div class="form-col">
+                    <div class="form-group">
+                        <label for="suburb">Suburb:</label>
+                        <input type="text" id="suburb" name="suburb" required>
+                    </div>
+                </div>
+                <div class="form-col">
+                    <div class="form-group">
+                        <label for="rooms">Number of Rooms:</label>
+                        <input type="number" id="rooms" name="rooms" min="1" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-col">
+                    <div class="form-group">
+                        <label for="type">Property Type:</label>
+                        <select id="type" name="type" required>
+                            <option value="h">House</option>
+                            <option value="u">Unit</option>
+                            <option value="t">Townhouse</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-col">
+                    <div class="form-group">
+                        <label for="method">Method of Sale:</label>
+                        <select id="method" name="method" required>
+                            <option value="S">S</option>
+                            <option value="PI">PI</option>
+                            <option value="VB">VB</option>
+                            <option value="SP">SP</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-col">
+                    <div class="form-group">
+                        <label for="distance">Distance from CBD (km):</label>
+                        <input type="number" step="0.1" id="distance" name="distance" required>
+                    </div>
+                </div>
+                <div class="form-col">
+                    <div class="form-group">
+                        <label for="postcode">Postcode:</label>
+                        <input type="number" id="postcode" name="postcode" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-col">
+                    <div class="form-group">
+                        <label for="bedroom2">Bedroom2:</label>
+                        <input type="number" step="0.1" id="bedroom2" name="bedroom2" required>
+                    </div>
+                </div>
+                <div class="form-col">
+                    <div class="form-group">
+                        <label for="bathroom">Bathrooms:</label>
+                        <input type="number" step="0.1" id="bathroom" name="bathroom" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-col">
+                    <div class="form-group">
+                        <label for="car">Car Spaces:</label>
+                        <input type="number" step="0.1" id="car" name="car" required>
+                    </div>
+                </div>
+                <div class="form-col">
+                    <div class="form-group">
+                        <label for="landsize">Land Size (sqm):</label>
+                        <input type="number" step="0.1" id="landsize" name="landsize" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-col">
+                    <div class="form-group">
+                        <label for="building_area">Building Area (sqm):</label>
+                        <input type="number" step="0.1" id="building_area" name="building_area">
+                    </div>
+                </div>
+                <div class="form-col">
+                    <div class="form-group">
+                        <label for="year_built">Year Built:</label>
+                        <input type="number" id="year_built" name="year_built">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-col">
+                    <div class="form-group">
+                        <label for="council_area">Council Area:</label>
+                        <input type="text" id="council_area" name="council_area" required>
+                    </div>
+                </div>
+                <div class="form-col">
+                    <div class="form-group">
+                        <label for="lattitude">Latitude:</label>
+                        <input type="number" step="0.0001" id="lattitude" name="lattitude" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-col">
+                    <div class="form-group">
+                        <label for="longtitude">Longitude:</label>
+                        <input type="number" step="0.0001" id="longtitude" name="longtitude" required>
+                    </div>
+                </div>
+                <div class="form-col">
+                    <div class="form-group">
+                        <label for="regionname">Region Name:</label>
+                        <input type="text" id="regionname" name="regionname" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-col">
+                    <div class="form-group">
+                        <label for="propertycount">Property Count:</label>
+                        <input type="number" step="0.1" id="propertycount" name="propertycount" required>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit">Predict</button>
+        </form>
+    </div>
+</body>
+</html>
