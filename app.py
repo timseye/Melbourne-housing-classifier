@@ -21,7 +21,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 # Load the model
 @app.on_event("startup")
 async def startup_event():
-    global model, feature_names, model_loaded
+    global model, feature_names, model_loaded, median_price
     model_loaded = False
     try:
         model = joblib.load("house_price_model.joblib")
@@ -32,6 +32,16 @@ async def startup_event():
             'numerical': model.named_steps['preprocessor'].transformers_[0][2],
             'categorical': model.named_steps['preprocessor'].transformers_[1][2]
         }
+        
+        # Get the median price from the original data
+        try:
+            data = pd.read_csv('melb_data.csv')
+            median_price = data['Price'].median()
+            print(f"Median price: ${median_price}")
+        except Exception as e:
+            print(f"Error loading median price: {e}")
+            median_price = 903000.0  # Default if unable to load
+            
         model_loaded = True
         print("Model loaded successfully!")
     except FileNotFoundError:
@@ -49,10 +59,14 @@ async def home(request: Request):
     
     if not js_exists:
         print(f"Warning: Test cases file not found at {test_cases_path}")
+    
+    # Format median price for display
+    formatted_median = f"${median_price:,.0f}" if 'median_price' in globals() else "$980,000"
         
     return templates.TemplateResponse("index.html", {
         "request": request,
-        "js_loaded": js_exists
+        "js_loaded": js_exists,
+        "median_price": formatted_median
     })
 
 @app.post("/predict", response_class=HTMLResponse)
@@ -83,9 +97,20 @@ async def predict(
             "message": "The prediction model has not been loaded. Please run ml_model.py first to train and save the model."
         }
         return templates.TemplateResponse(
-            "error.html", {"request": request, "error": error_message}
+            "error.html", {"request": request, "error": error_message, "median_price": f"${median_price:,.0f}"}
         )
-          # Create input DataFrame
+    
+    # Debug log input values
+    print(f"DEBUG: Received form data: Rooms={rooms}, Bedroom2={bedroom2}, Bathroom={bathroom}, Car={car}, Postcode={postcode}")
+    
+    # Round integer fields
+    rooms_int = int(rooms) if rooms else 0
+    bedroom2_int = int(bedroom2) if bedroom2 else 0
+    bathroom_int = int(bathroom) if bathroom else 0
+    car_int = int(car) if car else 0
+    postcode_int = int(postcode) if postcode else 0
+    
+    # Create input DataFrame (using original values for prediction)
     input_data = {
         'Suburb': [suburb],
         'Rooms': [rooms],
@@ -97,14 +122,17 @@ async def predict(
         'Bathroom': [bathroom],
         'Car': [car],
         'Landsize': [landsize],
-        'BuildingArea': [float(building_area) if building_area.strip() else None],
-        'YearBuilt': [float(year_built) if year_built.strip() else None],
+        'BuildingArea': [float(building_area) if building_area and building_area.strip() else None],
+        'YearBuilt': [float(year_built) if year_built and year_built.strip() else None],
         'CouncilArea': [council_area],
         'Lattitude': [lattitude],
         'Longtitude': [longtitude],
         'Regionname': [regionname],
         'Propertycount': [propertycount]
     }
+    
+    # Log the debug info
+    print(f"DEBUG: Formatted data: Rooms={input_data['Rooms'][0]}, Bedroom2={input_data['Bedroom2'][0]}, Bathroom={input_data['Bathroom'][0]}, Car={input_data['Car'][0]}")
     
     # Create DataFrame
     df = pd.DataFrame(input_data)
@@ -126,11 +154,36 @@ async def predict(
     # Get confidence in the predicted class (always show confidence in the predicted outcome)
     confidence = probability if prediction == 1 else 1 - probability
     
+    # Create a clean display version of the input data (for template display)
+    display_data = {
+        'Suburb': suburb,
+        'Rooms': rooms_int,
+        'Type': type,
+        'Method': method,
+        'Distance': distance,
+        'Postcode': postcode_int,
+        'Bedroom2': bedroom2_int,
+        'Bathroom': bathroom_int,
+        'Car': car_int,
+        'Landsize': landsize,
+        'BuildingArea': float(building_area) if building_area and building_area.strip() else None,
+        'YearBuilt': int(float(year_built)) if year_built and year_built.strip() else None,
+        'CouncilArea': council_area,
+        'Lattitude': lattitude,
+        'Longtitude': longtitude,
+        'Regionname': regionname,
+        'Propertycount': propertycount
+    }
+    
+    # Format median price
+    formatted_median = f"${median_price:,.0f}" if 'median_price' in globals() else "$980,000"
+    
     # Prepare result
     result = {
         "prediction": "Above median price" if prediction == 1 else "Below median price",
         "probability": f"{confidence:.2%}",  # Show confidence in the prediction
-        "input_data": input_data
+        "display_data": display_data,  # New clean format for display
+        "median_price": formatted_median
     }
     
     return templates.TemplateResponse(

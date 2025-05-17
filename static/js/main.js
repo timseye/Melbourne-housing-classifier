@@ -155,6 +155,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize tooltips
     initTooltips();
     
+    // Initialize custom dropdowns
+    initCustomDropdowns();
+    
     // Animate skyline
     animateSkyline();
     
@@ -166,3 +169,66 @@ document.addEventListener('DOMContentLoaded', function() {
         animateConfidenceMeter();
     }
 });
+
+// Function to initialize custom dropdowns
+function initCustomDropdowns() {
+    // Get all custom dropdown containers
+    const dropdowns = document.querySelectorAll('.custom-dropdown');
+    
+    dropdowns.forEach(dropdown => {
+        const input = dropdown.querySelector('.custom-dropdown-input');
+        const options = dropdown.querySelector('.dropdown-options');
+        
+        if (!input || !options) return;
+        
+        // Toggle dropdown on input click
+        input.addEventListener('click', function(e) {
+            e.preventDefault();
+            options.classList.toggle('show');
+        });
+        
+        // Filter options on input
+        input.addEventListener('input', function() {
+            const value = this.value.toLowerCase();
+            const optionElements = options.querySelectorAll('.dropdown-option');
+            
+            optionElements.forEach(option => {
+                const text = option.textContent.toLowerCase();
+                if (text.includes(value)) {
+                    option.style.display = 'block';
+                } else {
+                    option.style.display = 'none';
+                }
+            });
+            
+            // Show options list if it was hidden
+            if (!options.classList.contains('show')) {
+                options.classList.add('show');
+            }
+        });
+        
+        // Handle option selection
+        options.addEventListener('click', function(e) {
+            if (e.target.classList.contains('dropdown-option')) {
+                input.value = e.target.textContent.trim();
+                options.classList.remove('show');
+                
+                // Highlight selected option
+                const allOptions = options.querySelectorAll('.dropdown-option');
+                allOptions.forEach(opt => opt.classList.remove('selected'));
+                e.target.classList.add('selected');
+                
+                // Trigger change event
+                const event = new Event('change', { bubbles: true });
+                input.dispatchEvent(event);
+            }
+        });
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!dropdown.contains(e.target)) {
+                options.classList.remove('show');
+            }
+        });
+    });
+}
