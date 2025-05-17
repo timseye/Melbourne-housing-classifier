@@ -1,5 +1,14 @@
 /* Melbourne Housing Classifier - Main Stylesheet */
 
+/* Global styles */
+body {
+  font-family: 'Times New Roman', Times, serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f5f5f5;
+  color: #333;
+}
+
 :root {
   /* Color palette */
   --primary-color: #2c3e50;
@@ -43,12 +52,9 @@
 }
 
 body {
-  font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   line-height: 1.6;
   background-color: var(--background-color);
   color: var(--text-color);
-  margin: 0;
-  padding: 0;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -758,4 +764,71 @@ select.error {
   .navbar-links {
     gap: var(--spacing-md);
   }
+}
+
+/* Custom dropdown styles */
+.custom-dropdown {
+  position: relative;
+  width: 100%;
+}
+
+.custom-dropdown-input {
+  width: 100%;
+  padding: var(--spacing-md);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-sm);
+  font-size: 1rem;
+  background-color: white;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  cursor: pointer;
+}
+
+.custom-dropdown-input:focus {
+  outline: none;
+  border-color: var(--secondary-color);
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+}
+
+.dropdown-arrow {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-light);
+  pointer-events: none;
+}
+
+.dropdown-options {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid var(--border-color);
+  border-top: none;
+  border-radius: 0 0 var(--border-radius-sm) var(--border-radius-sm);
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1000;
+  display: none;
+  box-shadow: var(--shadow-md);
+}
+
+.dropdown-options.show {
+  display: block;
+}
+
+.dropdown-option {
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.dropdown-option:hover {
+  background-color: #f0f7ff;
+}
+
+.dropdown-option.selected {
+  background-color: #e0f0ff;
+  font-weight: 500;
 }

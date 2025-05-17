@@ -18,7 +18,7 @@
         <div class="navbar-links">
             <a href="/" title="Home"><i class="fas fa-home"></i> Home</a>
             <div class="median-price-display">
-                <i class="fas fa-dollar-sign"></i> Median Price: $980,000
+                <i class="fas fa-dollar-sign"></i> Median Price: {{ median_price }}
             </div>
         </div>
     </div>
@@ -58,7 +58,7 @@
             
             <div class="median-explainer">
                 <h3><i class="fas fa-info-circle"></i> About Melbourne's Median House Price</h3>
-                <p>The current median house price in Melbourne is <strong>$980,000</strong> (as of May 2025). Our model predicts whether a property is likely to be valued above or below this median price based on its characteristics.</p>
+                <p>The current median house price in Melbourne is <strong>{{ median_price }}</strong> (as of May 2025). Our model predicts whether a property is likely to be valued above or below this median price based on its characteristics.</p>
                 <p>The median price represents the middle point of all house prices in Melbourne - half of properties sell for more, and half sell for less than this amount.</p>
             </div>
             
@@ -88,7 +88,59 @@
                             <i class="fas fa-map-marker-alt"></i> Suburb:
                             <span class="help-text">Enter Melbourne suburb name</span>
                         </label>
-                        <input type="text" id="suburb" name="suburb" required placeholder="e.g. Richmond">
+                        <div class="custom-dropdown">
+                            <input type="text" id="suburb" name="suburb" class="custom-dropdown-input" required placeholder="e.g. Richmond">
+                            <span class="dropdown-arrow"><i class="fas fa-chevron-down"></i></span>
+                            <div class="dropdown-options">
+                                <div class="dropdown-option">Abbotsford</div>
+                                <div class="dropdown-option">Airport West</div>
+                                <div class="dropdown-option">Albert Park</div>
+                                <div class="dropdown-option">Alphington</div>
+                                <div class="dropdown-option">Altona</div>
+                                <div class="dropdown-option">Armadale</div>
+                                <div class="dropdown-option">Ascot Vale</div>
+                                <div class="dropdown-option">Balwyn</div>
+                                <div class="dropdown-option">Balwyn North</div>
+                                <div class="dropdown-option">Brighton</div>
+                                <div class="dropdown-option">Brunswick</div>
+                                <div class="dropdown-option">Brunswick West</div>
+                                <div class="dropdown-option">Carlton</div>
+                                <div class="dropdown-option">Carnegie</div>
+                                <div class="dropdown-option">Caulfield</div>
+                                <div class="dropdown-option">Coburg</div>
+                                <div class="dropdown-option">Collingwood</div>
+                                <div class="dropdown-option">Craigieburn</div>
+                                <div class="dropdown-option">Doncaster</div>
+                                <div class="dropdown-option">Essendon</div>
+                                <div class="dropdown-option">Fitzroy</div>
+                                <div class="dropdown-option">Footscray</div>
+                                <div class="dropdown-option">Glen Iris</div>
+                                <div class="dropdown-option">Glenroy</div>
+                                <div class="dropdown-option">Hampton</div>
+                                <div class="dropdown-option">Hawthorn</div>
+                                <div class="dropdown-option">Kensington</div>
+                                <div class="dropdown-option">Kew</div>
+                                <div class="dropdown-option">Malvern</div>
+                                <div class="dropdown-option">Melbourne</div>
+                                <div class="dropdown-option">Mentone</div>
+                                <div class="dropdown-option">Moonee Ponds</div>
+                                <div class="dropdown-option">Newport</div>
+                                <div class="dropdown-option">Northcote</div>
+                                <div class="dropdown-option">Oakleigh</div>
+                                <div class="dropdown-option">Pascoe Vale</div>
+                                <div class="dropdown-option">Port Melbourne</div>
+                                <div class="dropdown-option">Preston</div>
+                                <div class="dropdown-option">Richmond</div>
+                                <div class="dropdown-option">South Melbourne</div>
+                                <div class="dropdown-option">South Yarra</div>
+                                <div class="dropdown-option">St Kilda</div>
+                                <div class="dropdown-option">Thornbury</div>
+                                <div class="dropdown-option">Toorak</div>
+                                <div class="dropdown-option">Werribee</div>
+                                <div class="dropdown-option">Williamstown</div>
+                                <div class="dropdown-option">Yarraville</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="form-col">
@@ -156,7 +208,7 @@
                         <label for="bedroom2">
                             <i class="fas fa-bed"></i> Bedrooms:
                         </label>
-                        <input type="number" step="0.1" id="bedroom2" name="bedroom2" required placeholder="e.g. 3.0">
+                        <input type="number" min="0" id="bedroom2" name="bedroom2" required placeholder="e.g. 3">
                     </div>
                 </div>
                 <div class="form-col">
@@ -164,7 +216,7 @@
                         <label for="bathroom">
                             <i class="fas fa-bath"></i> Bathrooms:
                         </label>
-                        <input type="number" step="0.1" id="bathroom" name="bathroom" required placeholder="e.g. 2.0">
+                        <input type="number" min="0" id="bathroom" name="bathroom" required placeholder="e.g. 2">
                     </div>
                 </div>
             </div>
@@ -175,7 +227,7 @@
                         <label for="car">
                             <i class="fas fa-car"></i> Car Spaces:
                         </label>
-                        <input type="number" step="0.1" id="car" name="car" required placeholder="e.g. 1.0">
+                        <input type="number" min="0" id="car" name="car" required placeholder="e.g. 1">
                     </div>
                 </div>
                 <div class="form-col">
@@ -215,7 +267,29 @@
                         <label for="council_area">
                             <i class="fas fa-landmark"></i> Council Area:
                         </label>
-                        <input type="text" id="council_area" name="council_area" required placeholder="e.g. Melbourne">
+                        <div class="custom-dropdown">
+                            <input type="text" id="council_area" name="council_area" class="custom-dropdown-input" required placeholder="e.g. Melbourne">
+                            <span class="dropdown-arrow"><i class="fas fa-chevron-down"></i></span>
+                            <div class="dropdown-options">
+                                <div class="dropdown-option">Banyule</div>
+                                <div class="dropdown-option">Bayside</div>
+                                <div class="dropdown-option">Boroondara</div>
+                                <div class="dropdown-option">Darebin</div>
+                                <div class="dropdown-option">Hobsons Bay</div>
+                                <div class="dropdown-option">Hume</div>
+                                <div class="dropdown-option">Kingston</div>
+                                <div class="dropdown-option">Manningham</div>
+                                <div class="dropdown-option">Maribyrnong</div>
+                                <div class="dropdown-option">Melbourne</div>
+                                <div class="dropdown-option">Monash</div>
+                                <div class="dropdown-option">Moonee Valley</div>
+                                <div class="dropdown-option">Moreland</div>
+                                <div class="dropdown-option">Port Phillip</div>
+                                <div class="dropdown-option">Stonnington</div>
+                                <div class="dropdown-option">Whitehorse</div>
+                                <div class="dropdown-option">Yarra</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="form-col">
@@ -223,7 +297,18 @@
                         <label for="regionname">
                             <i class="fas fa-map"></i> Region Name:
                         </label>
-                        <input type="text" id="regionname" name="regionname" required placeholder="e.g. Northern Metropolitan">
+                        <div class="custom-dropdown">
+                            <input type="text" id="regionname" name="regionname" class="custom-dropdown-input" required placeholder="e.g. Northern Metropolitan">
+                            <span class="dropdown-arrow"><i class="fas fa-chevron-down"></i></span>
+                            <div class="dropdown-options">
+                                <div class="dropdown-option">Northern Metropolitan</div>
+                                <div class="dropdown-option">Western Metropolitan</div>
+                                <div class="dropdown-option">Southern Metropolitan</div>
+                                <div class="dropdown-option">Eastern Metropolitan</div>
+                                <div class="dropdown-option">South-Eastern Metropolitan</div>
+                                <div class="dropdown-option">North-Western Metropolitan</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
