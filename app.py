@@ -68,8 +68,8 @@ async def predict(
     bathroom: float = Form(...),
     car: float = Form(...),
     landsize: float = Form(...),
-    building_area: float = Form(None),
-    year_built: float = Form(None),
+    building_area: str = Form(""),
+    year_built: str = Form(""),
     council_area: str = Form(...),
     lattitude: float = Form(...),
     longtitude: float = Form(...),
@@ -85,8 +85,7 @@ async def predict(
         return templates.TemplateResponse(
             "error.html", {"request": request, "error": error_message}
         )
-        
-    # Create input DataFrame
+          # Create input DataFrame
     input_data = {
         'Suburb': [suburb],
         'Rooms': [rooms],
@@ -98,8 +97,8 @@ async def predict(
         'Bathroom': [bathroom],
         'Car': [car],
         'Landsize': [landsize],
-        'BuildingArea': [building_area],
-        'YearBuilt': [year_built],
+        'BuildingArea': [float(building_area) if building_area.strip() else None],
+        'YearBuilt': [float(year_built) if year_built.strip() else None],
         'CouncilArea': [council_area],
         'Lattitude': [lattitude],
         'Longtitude': [longtitude],

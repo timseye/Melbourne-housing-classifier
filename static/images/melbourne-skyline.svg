@@ -1,0 +1,49 @@
+<svg width="800" height="200" viewBox="0 0 800 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="800" height="200" fill="#f8f9fa"/>
+  
+  <!-- City skyline -->
+  <g fill="#2c3e50">
+    <!-- Buildings -->
+    <rect x="50" y="80" width="30" height="120" />
+    <rect x="85" y="100" width="40" height="100" />
+    <rect x="130" y="60" width="25" height="140" />
+    <polygon points="142.5,40 155,60 130,60" />
+    
+    <rect x="160" y="110" width="35" height="90" />
+    <rect x="200" y="70" width="20" height="130" />
+    <rect x="225" y="90" width="30" height="110" />
+    
+    <!-- Eureka Tower -->
+    <rect x="280" y="30" width="25" height="170" />
+    <polygon points="292.5,10 305,30 280,30" />
+    
+    <!-- More buildings -->
+    <rect x="320" y="70" width="45" height="130" />
+    <rect x="370" y="90" width="30" height="110" />
+    <rect x="405" y="60" width="20" height="140" />
+    
+    <!-- Arts Centre Spire -->
+    <polygon points="450,50 460,170 440,170" />
+    <circle cx="450" cy="40" r="5" />
+    
+    <!-- More buildings -->
+    <rect x="470" y="100" width="50" height="100" />
+    <rect x="525" y="80" width="35" height="120" />
+    <rect x="565" y="110" width="25" height="90" />
+    <rect x="595" y="70" width="30" height="130" />
+    <rect x="630" y="90" width="40" height="110" />
+    <rect x="675" y="60" width="20" height="140" />
+    <rect x="700" y="80" width="35" height="120" />
+    <rect x="740" y="100" width="30" height="100" />
+  </g>
+  
+  <!-- Yarra River -->
+  <path d="M0,180 C100,170 200,190 300,175 C400,160 500,185 600,170 C700,160 800,180 800,180 L800,200 L0,200 Z" fill="#3498db" opacity="0.7"/>
+  
+  <!-- Sun -->
+  <circle cx="730" cy="40" r="20" fill="#f39c12"/>
+  
+  <!-- Text -->
+  <text x="400" y="195" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#2c3e50">Melbourne Skyline</text>
+</svg>

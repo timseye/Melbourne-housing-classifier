@@ -3,105 +3,147 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prediction Results</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-        h1, h2 {
-            color: #333;
-            text-align: center;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background-color: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .result {
-            margin: 20px 0;
-            padding: 20px;
-            background-color: #f9f9f9;
-            border-radius: 5px;
-            text-align: center;
-        }
-        .result h2 {
-            margin-top: 0;
-        }
-        .prediction {
-            font-size: 24px;
-            font-weight: bold;
-            margin: 20px 0;
-            color: #2c3e50;
-        }
-        .probability {
-            font-size: 18px;
-            color: #555;
-            margin-bottom: 20px;
-        }
-        .details {
-            margin-top: 30px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        th, td {
-            padding: 10px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        .button {
-            display: inline-block;
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 15px;
-            text-decoration: none;
-            border-radius: 4px;
-            margin-top: 20px;
-        }
-        .button:hover {
-            background-color: #45a049;
-        }
-    </style>
+    <title>Prediction Results - Melbourne Housing Predictor</title>
+    <link rel="icon" type="image/svg+xml" href="/static/images/favicon.svg">
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <script src="/static/js/main.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
-<body>
-    <div class="container">
-        <h1>Prediction Results</h1>
-          <div class="result">
-            <h2>Model Prediction</h2>
-            <div class="prediction">{{ result.prediction }}</div>
-            <div class="probability">Confidence level: {{ result.probability }}</div>
+<body>    <!-- Navigation bar -->
+    <div class="navbar">
+        <div class="navbar-title">
+            <a href="/">Melbourne Housing Predictor</a>
+        </div>
+        <div class="navbar-links">
+            <a href="/" title="Home"><i class="fas fa-home"></i> Home</a>
+            <div class="median-price-display">
+                <i class="fas fa-dollar-sign"></i> Median Price: $980,000
+            </div>
+        </div>
+    </div>
+    
+    <div class="main-container">
+        <!-- Melbourne Skyline Image -->
+        <div class="skyline-container">
+            <img src="/static/images/melbourne-skyline.svg" alt="Melbourne Skyline" class="skyline-image">
         </div>
         
-        <div class="details">
-            <h2>Input Details</h2>
-            <table>
-                <tr>
-                    <th>Feature</th>
-                    <th>Value</th>
-                </tr>
-                {% for key, value in result.input_data.items() %}
-                <tr>
-                    <td>{{ key }}</td>
-                    <td>{{ value[0] }}</td>
-                </tr>
-                {% endfor %}
-            </table>
+        <div class="card">
+            <h1><i class="fas fa-chart-line"></i> Prediction Results</h1>
+            
+            <div class="result-card">
+                <h2>Model Prediction</h2>
+                
+                {% if result.prediction == "Above median price" %}
+                <div class="prediction-badge above">
+                    <i class="fas fa-arrow-up"></i> {{ result.prediction }}
+                </div>
+                <div class="prediction-explanation">
+                    <p>The property is predicted to be <strong>more expensive</strong> than the median price in Melbourne.</p>
+                </div>
+                
+                <div class="median-price-context">
+                    <div class="median-price-marker">
+                        <div class="marker-line"></div>
+                        <div class="marker-label">Median: $980,000</div>
+                    </div>
+                    <div class="price-range above">
+                        <div class="predicted-range" style="width: 70%;"></div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="prediction-badge below">
+                    <i class="fas fa-arrow-down"></i> {{ result.prediction }}
+                </div>
+                <div class="prediction-explanation">
+                    <p>The property is predicted to be <strong>less expensive</strong> than the median price in Melbourne.</p>
+                </div>
+                
+                <div class="median-price-context">
+                    <div class="median-price-marker">
+                        <div class="marker-line"></div>
+                        <div class="marker-label">Median: $980,000</div>
+                    </div>
+                    <div class="price-range below">
+                        <div class="predicted-range" style="width: 70%;"></div>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <p class="confidence-text">Confidence level: {{ result.probability }}</p>
+                
+                <!-- Convert probability string to number (remove % sign and convert to float) -->
+                {% set confidence_value = result.probability.replace('%', '') | float %}
+                
+                <div class="confidence-meter">
+                    <div class="confidence-meter-fill" data-confidence="{{ confidence_value }}"></div>
+                </div>
+                
+                <p class="confidence-explanation">
+                    {% if confidence_value > 80 %}
+                    <i class="fas fa-check-circle"></i> High confidence prediction
+                    {% elif confidence_value > 60 %}
+                    <i class="fas fa-info-circle"></i> Moderate confidence prediction
+                    {% else %}
+                    <i class="fas fa-question-circle"></i> Low confidence prediction
+                    {% endif %}
+                </p>
+            </div>
+            
+            <div class="details">
+                <h2><i class="fas fa-info-circle"></i> Property Details</h2>
+                
+                <div class="property-summary">
+                    <div class="property-feature">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span class="feature-label">Location:</span>
+                        <span class="feature-value">{{ result.input_data.Suburb[0] }}</span>
+                    </div>
+                    
+                    <div class="property-feature">
+                        <i class="fas fa-home"></i>
+                        <span class="feature-label">Property Type:</span>
+                        <span class="feature-value">
+                            {% if result.input_data.Type[0] == 'h' %}House
+                            {% elif result.input_data.Type[0] == 'u' %}Unit/Apartment
+                            {% elif result.input_data.Type[0] == 't' %}Townhouse
+                            {% endif %}
+                        </span>
+                    </div>
+                    
+                    <div class="property-feature">
+                        <i class="fas fa-door-open"></i>
+                        <span class="feature-label">Rooms:</span>
+                        <span class="feature-value">{{ result.input_data.Rooms[0] }}</span>
+                    </div>
+                </div>
+                
+                <table class="input-data-table">
+                    <tr>
+                        <th width="40%">Feature</th>
+                        <th width="60%">Value</th>
+                    </tr>
+                    {% for key, value in result.input_data.items() %}
+                    <tr>
+                        <td>{{ key }}</td>
+                        <td>{{ value[0] }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <a href="/" class="btn btn-primary">
+                    <i class="fas fa-home"></i> Make Another Prediction
+                </a>
+            </div>
         </div>
-        
-        <div style="text-align: center;">
-            <a href="/" class="button">Make Another Prediction</a>
-        </div>
+    </div>
+    
+    <!-- Footer -->
+    <div class="footer">
+        <p>&copy; 2025 Melbourne Housing Predictor | <span id="current-date">May 17, 2025</span></p>
+        <p class="footer-tagline">Machine Learning Project for Housing Price Classification</p>
     </div>
 </body>
 </html>

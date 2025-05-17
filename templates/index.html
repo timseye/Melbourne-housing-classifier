@@ -4,103 +4,99 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Melbourne Housing Price Predictor</title>
+    <link rel="icon" type="image/svg+xml" href="/static/images/favicon.svg">
+    <link rel="stylesheet" href="/static/css/styles.css">
     <script src="/static/js/test_cases.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-        .warning {
-            background-color: #fff3cd;
-            color: #856404;
-            padding: 10px;
-            margin-bottom: 20px;
-            border-radius: 4px;
-            border-left: 4px solid #ffc107;
-        }
-        h1 {
-            color: #333;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background-color: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        input, select {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        .form-row {
-            display: flex;
-            flex-wrap: wrap;
-            margin: 0 -10px;
-        }
-        .form-col {
-            flex: 1;
-            padding: 0 10px;
-            min-width: 200px;
-        }
-    </style>
+    <script src="/static/js/main.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
-<body>    <div class="container">
-        <h1>Melbourne Housing Price Predictor</h1>
-        <p>Enter property details to predict if the price will be above or below the median.</p>
-        
-        {% if not js_loaded %}
-        <div class="warning">
-            <strong>Warning:</strong> Test case selector JavaScript files could not be loaded. Some features may not work correctly.
+<body>    <!-- Navigation bar -->
+    <div class="navbar">
+        <div class="navbar-title">
+            <a href="/">Melbourne Housing Predictor</a>
         </div>
-        {% endif %}
-        
-        <div class="form-group">
-            <label for="testCaseSelector">Load test case:</label>
-            <select id="testCaseSelector" style="margin-bottom: 20px; padding: 10px; width: 100%;">
-                <!-- Options will be populated by JavaScript -->
-            </select>
+        <div class="navbar-links">
+            <a href="/" title="Home"><i class="fas fa-home"></i> Home</a>
+            <div class="median-price-display">
+                <i class="fas fa-dollar-sign"></i> Median Price: $980,000
+            </div>
         </div>
-        
-        <form action="/predict" method="post">
-            <div class="form-row">
+    </div>
+    
+    <!-- Loading indicator -->
+    <div class="loader-container" id="loader-container">
+        <div class="loader"></div>
+    </div>
+    
+    <div class="main-container">
+        <!-- Melbourne Skyline Image -->
+        <div class="skyline-container">
+            <img src="/static/images/melbourne-skyline.svg" alt="Melbourne Skyline" class="skyline-image">
+        </div>
+
+        <div class="card">
+            <h1>Melbourne Housing Price Predictor</h1>
+            <p class="intro-text">Enter property details below to predict if the price will be above or below the median price in Melbourne. Our machine learning model analyzes various factors to make accurate predictions.</p>
+            
+            <div class="feature-highlights">
+                <div class="feature-highlight">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Data-Driven Predictions</h3>
+                    <p>Our model is trained on real Melbourne housing data to provide reliable predictions.</p>
+                </div>
+                <div class="feature-highlight">
+                    <i class="fas fa-map-marked-alt"></i>
+                    <h3>Location Matters</h3>
+                    <p>Property location is a key factor in determining housing prices in Melbourne.</p>
+                </div>
+                <div class="feature-highlight">
+                    <i class="fas fa-percentage"></i>
+                    <h3>Confidence Metrics</h3>
+                    <p>Each prediction comes with a confidence level to help guide your decisions.</p>
+                </div>
+            </div>
+            
+            <div class="median-explainer">
+                <h3><i class="fas fa-info-circle"></i> About Melbourne's Median House Price</h3>
+                <p>The current median house price in Melbourne is <strong>$980,000</strong> (as of May 2025). Our model predicts whether a property is likely to be valued above or below this median price based on its characteristics.</p>
+                <p>The median price represents the middle point of all house prices in Melbourne - half of properties sell for more, and half sell for less than this amount.</p>
+            </div>
+            
+            {% if not js_loaded %}
+            <div class="alert alert-warning">
+                <i class="fas fa-exclamation-triangle"></i> <strong>Warning:</strong> Test case selector JavaScript files could not be loaded. Some features may not work correctly.
+            </div>
+            {% endif %}
+            
+            <div class="form-group">
+                <label for="testCaseSelector">Quick Fill - Load Test Case:</label>
+                <div class="test-case-container">
+                    <select id="testCaseSelector" class="test-case-select">
+                        <!-- Options will be populated by JavaScript -->
+                    </select>
+                    <div class="tooltip-icon">
+                        <i class="fas fa-info-circle"></i>
+                        <span class="tooltip-text">Select a pre-defined property to quickly fill the form</span>
+                    </div>
+                </div>
+            </div>
+            
+            <form id="prediction-form" action="/predict" method="post">            <div class="form-row">
                 <div class="form-col">
                     <div class="form-group">
-                        <label for="suburb">Suburb:</label>
-                        <input type="text" id="suburb" name="suburb" required>
+                        <label for="suburb">
+                            <i class="fas fa-map-marker-alt"></i> Suburb:
+                            <span class="help-text">Enter Melbourne suburb name</span>
+                        </label>
+                        <input type="text" id="suburb" name="suburb" required placeholder="e.g. Richmond">
                     </div>
                 </div>
                 <div class="form-col">
                     <div class="form-group">
-                        <label for="rooms">Number of Rooms:</label>
-                        <input type="number" id="rooms" name="rooms" min="1" required>
+                        <label for="rooms">
+                            <i class="fas fa-door-open"></i> Number of Rooms:
+                        </label>
+                        <input type="number" id="rooms" name="rooms" min="1" required placeholder="e.g. 3">
                     </div>
                 </div>
             </div>
@@ -108,22 +104,28 @@
             <div class="form-row">
                 <div class="form-col">
                     <div class="form-group">
-                        <label for="type">Property Type:</label>
+                        <label for="type">
+                            <i class="fas fa-home"></i> Property Type:
+                        </label>
                         <select id="type" name="type" required>
+                            <option value="" disabled selected>Select property type</option>
                             <option value="h">House</option>
-                            <option value="u">Unit</option>
+                            <option value="u">Unit/Apartment</option>
                             <option value="t">Townhouse</option>
                         </select>
                     </div>
                 </div>
                 <div class="form-col">
                     <div class="form-group">
-                        <label for="method">Method of Sale:</label>
+                        <label for="method">
+                            <i class="fas fa-gavel"></i> Method of Sale:
+                        </label>
                         <select id="method" name="method" required>
-                            <option value="S">S</option>
-                            <option value="PI">PI</option>
-                            <option value="VB">VB</option>
-                            <option value="SP">SP</option>
+                            <option value="" disabled selected>Select sale method</option>
+                            <option value="S">S - Property sold</option>
+                            <option value="PI">PI - Property passed in</option>
+                            <option value="VB">VB - Vendor bid</option>
+                            <option value="SP">SP - Property sold prior</option>
                         </select>
                     </div>
                 </div>
@@ -132,14 +134,18 @@
             <div class="form-row">
                 <div class="form-col">
                     <div class="form-group">
-                        <label for="distance">Distance from CBD (km):</label>
-                        <input type="number" step="0.1" id="distance" name="distance" required>
+                        <label for="distance">
+                            <i class="fas fa-route"></i> Distance from CBD (km):
+                        </label>
+                        <input type="number" step="0.1" id="distance" name="distance" required placeholder="e.g. 5.2">
                     </div>
                 </div>
                 <div class="form-col">
                     <div class="form-group">
-                        <label for="postcode">Postcode:</label>
-                        <input type="number" id="postcode" name="postcode" required>
+                        <label for="postcode">
+                            <i class="fas fa-mail-bulk"></i> Postcode:
+                        </label>
+                        <input type="number" id="postcode" name="postcode" required placeholder="e.g. 3000">
                     </div>
                 </div>
             </div>
@@ -147,14 +153,18 @@
             <div class="form-row">
                 <div class="form-col">
                     <div class="form-group">
-                        <label for="bedroom2">Bedroom2:</label>
-                        <input type="number" step="0.1" id="bedroom2" name="bedroom2" required>
+                        <label for="bedroom2">
+                            <i class="fas fa-bed"></i> Bedrooms:
+                        </label>
+                        <input type="number" step="0.1" id="bedroom2" name="bedroom2" required placeholder="e.g. 3.0">
                     </div>
                 </div>
                 <div class="form-col">
                     <div class="form-group">
-                        <label for="bathroom">Bathrooms:</label>
-                        <input type="number" step="0.1" id="bathroom" name="bathroom" required>
+                        <label for="bathroom">
+                            <i class="fas fa-bath"></i> Bathrooms:
+                        </label>
+                        <input type="number" step="0.1" id="bathroom" name="bathroom" required placeholder="e.g. 2.0">
                     </div>
                 </div>
             </div>
@@ -162,14 +172,18 @@
             <div class="form-row">
                 <div class="form-col">
                     <div class="form-group">
-                        <label for="car">Car Spaces:</label>
-                        <input type="number" step="0.1" id="car" name="car" required>
+                        <label for="car">
+                            <i class="fas fa-car"></i> Car Spaces:
+                        </label>
+                        <input type="number" step="0.1" id="car" name="car" required placeholder="e.g. 1.0">
                     </div>
                 </div>
                 <div class="form-col">
                     <div class="form-group">
-                        <label for="landsize">Land Size (sqm):</label>
-                        <input type="number" step="0.1" id="landsize" name="landsize" required>
+                        <label for="landsize">
+                            <i class="fas fa-chart-area"></i> Land Size (sqm):
+                        </label>
+                        <input type="number" step="0.1" id="landsize" name="landsize" required placeholder="e.g. 500.0">
                     </div>
                 </div>
             </div>
@@ -177,14 +191,20 @@
             <div class="form-row">
                 <div class="form-col">
                     <div class="form-group">
-                        <label for="building_area">Building Area (sqm):</label>
-                        <input type="number" step="0.1" id="building_area" name="building_area">
+                        <label for="building_area">
+                            <i class="fas fa-building"></i> Building Area (sqm):
+                            <span class="optional-label">(optional)</span>
+                        </label>
+                        <input type="number" step="0.1" id="building_area" name="building_area" placeholder="e.g. 150.0">
                     </div>
                 </div>
                 <div class="form-col">
                     <div class="form-group">
-                        <label for="year_built">Year Built:</label>
-                        <input type="number" id="year_built" name="year_built">
+                        <label for="year_built">
+                            <i class="fas fa-calendar-alt"></i> Year Built:
+                            <span class="optional-label">(optional)</span>
+                        </label>
+                        <input type="number" id="year_built" name="year_built" placeholder="e.g. 2000">
                     </div>
                 </div>
             </div>
@@ -192,14 +212,18 @@
             <div class="form-row">
                 <div class="form-col">
                     <div class="form-group">
-                        <label for="council_area">Council Area:</label>
-                        <input type="text" id="council_area" name="council_area" required>
+                        <label for="council_area">
+                            <i class="fas fa-landmark"></i> Council Area:
+                        </label>
+                        <input type="text" id="council_area" name="council_area" required placeholder="e.g. Melbourne">
                     </div>
                 </div>
                 <div class="form-col">
                     <div class="form-group">
-                        <label for="lattitude">Latitude:</label>
-                        <input type="number" step="0.0001" id="lattitude" name="lattitude" required>
+                        <label for="regionname">
+                            <i class="fas fa-map"></i> Region Name:
+                        </label>
+                        <input type="text" id="regionname" name="regionname" required placeholder="e.g. Northern Metropolitan">
                     </div>
                 </div>
             </div>
@@ -207,14 +231,18 @@
             <div class="form-row">
                 <div class="form-col">
                     <div class="form-group">
-                        <label for="longtitude">Longitude:</label>
-                        <input type="number" step="0.0001" id="longtitude" name="longtitude" required>
+                        <label for="lattitude">
+                            <i class="fas fa-location-arrow"></i> Latitude:
+                        </label>
+                        <input type="number" step="0.0001" id="lattitude" name="lattitude" required placeholder="e.g. -37.8136">
                     </div>
                 </div>
                 <div class="form-col">
                     <div class="form-group">
-                        <label for="regionname">Region Name:</label>
-                        <input type="text" id="regionname" name="regionname" required>
+                        <label for="longtitude">
+                            <i class="fas fa-location-arrow"></i> Longitude:
+                        </label>
+                        <input type="number" step="0.0001" id="longtitude" name="longtitude" required placeholder="e.g. 144.9631">
                     </div>
                 </div>
             </div>
@@ -222,14 +250,25 @@
             <div class="form-row">
                 <div class="form-col">
                     <div class="form-group">
-                        <label for="propertycount">Property Count:</label>
-                        <input type="number" step="0.1" id="propertycount" name="propertycount" required>
+                        <label for="propertycount">
+                            <i class="fas fa-list-ol"></i> Property Count in Area:
+                        </label>
+                        <input type="number" step="0.1" id="propertycount" name="propertycount" required placeholder="e.g. 9500.0">
                     </div>
                 </div>
             </div>
 
-            <button type="submit">Predict</button>
+            <button type="submit" class="btn btn-primary btn-block">
+                <i class="fas fa-calculator"></i> Predict Property Price
+            </button>
         </form>
     </div>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+    <p>&copy; 2025 Melbourne Housing Predictor | <span id="current-date">May 17, 2025</span></p>
+    <p class="footer-tagline">Machine Learning Project for Housing Price Classification</p>
+</div>
 </body>
 </html>
